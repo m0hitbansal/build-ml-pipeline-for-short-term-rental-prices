@@ -60,6 +60,8 @@ def go(args):
     X = pd.read_csv(trainval_local_path)
     y = X.pop("price")  # this removes the column "price" from X and puts it into y
 
+
+
     logger.info(f"Minimum price: {y.min()}, Maximum price: {y.max()}")
 
     X_train, X_val, y_train, y_val = train_test_split(
@@ -95,6 +97,9 @@ def go(args):
     # Save the sk_pipe pipeline as a mlflow.sklearn model in the directory "random_forest_dir"
 
     export_path = "random_forest_dir"
+    object_col=X_val.select_dtypes(include=['object']).columns.tolist()
+    X_val[object_col]=X_val[object_col].astype(str)
+
     signature = infer_signature(X_val, y_pred)
 
     mlflow.sklearn.save_model(
